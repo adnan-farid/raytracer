@@ -4,12 +4,7 @@
 class Camera {
 public:
     Camera() {};
-    Camera(double viewport_height, double viewport_width, double image_height, double image_width ,double focal_length, vec3 center) : viewport_height(viewport_height), viewport_width(viewport_height * (double(image_width) / image_height)), image_height(image_height), image_width(image_width), focal_length(focal_length), center(center) {
-        v = vec3(0, -viewport_height, 0); // negative bc we are going down
-        u = vec3(viewport_width, 0, 0);
-        delta_v = v / image_height; // img is a 2d array, we need to have a 3d 'step' to move one pixel, 
-        delta_u = u / image_width;
-    };
+    Camera(double aspect_ratio, int image_width, double viewport_height, double focal_length) : aspect_ratio(aspect_ratio), image_width(image_width), viewport_height(viewport_height), focal_length(focal_length) {};
 
     void render(Hittable& obj) { 
         initialize();
@@ -32,9 +27,17 @@ public:
 
 private:
     void initialize() {
+        image_height = int(image_width / aspect_ratio);
+        image_height = (image_height < 1) ? 1 : image_height;
+        viewport_width = viewport_height * (double(image_width) / image_height);
+
+        v = vec3(0, -viewport_height, 0); // negative bc we are going down
+        u = vec3(viewport_width, 0, 0);
+        delta_v = v / image_height; // img is a 2d array, we need to have a 3d 'step' to move one pixel, 
+        delta_u = u / image_width;
         // viewport
         vec3 viewport_upper_left = center - vec3(0, 0, focal_length) - u / 2 - v / 2;
-        vec3 upperLeftPixelCenter = viewport_upper_left + 0.5 * (delta_u + delta_v); // middle from left to right and middle from top to bottom
+        upperLeftPixelCenter = viewport_upper_left + 0.5 * (delta_u + delta_v); // middle from left to right and middle from top to bottom
     }
     
     vec3 ray_color(const Ray& r, const Hittable& world) {
@@ -51,8 +54,10 @@ private:
     double focal_length; // length of camera to viewport
     double viewport_height;
     double viewport_width;
-    double image_height;
-    double image_width;
+    int image_height;
+    int image_width;
+    double aspect_ratio;
+    vec3 upperLeftPixelCenter;
     vec3 center;
     vec3 u; // left edge to right edge
     vec3 v; // upper edge to bottom edge

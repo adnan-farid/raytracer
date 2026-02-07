@@ -28,8 +28,9 @@ inline double random_uniform_dist_num() {
 }
 
 inline double random_uniform_dist_num(double min, double max) {
-    return min + (max - min) * random_uniform_dist_num()
+    return min + (max - min) * random_uniform_dist_num();
 }
+
 #include "utils/color.h"
 #include "math/ray.h"
 #include "math/vec3.h"
