@@ -9,12 +9,15 @@
 
 int main() { 
     double aspect_ratio = 16.0 / 9.0; // ideal ratio
-    int image_width = 400;
+    int image_width = 800;
     int viewport_height = 2.0;
     double focal_length =  1.0;   
-    int samples_per_pixel = 10;
+    int samples_per_pixel = 10; // anti aliasing
+    int max_depth = 10; // maximum amt of bounces 
 
-    Camera camera = Camera(aspect_ratio, image_width, viewport_height, focal_length, samples_per_pixel);
+
+
+    Camera camera = Camera(aspect_ratio, image_width, viewport_height, focal_length, samples_per_pixel, max_depth);
 
     Hittable_List world;
 

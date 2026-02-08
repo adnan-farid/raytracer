@@ -7,8 +7,9 @@
 class Sphere : public Hittable{
 public:
     Sphere() {};
-    Sphere(vec3 center, double radius) : center(center), radius(std::fmax(0, radius)) {};
-    
+    Sphere(vec3 center, double radius) : center(center), radius(std::fmax(0, radius)) {
+        // TODO: initialize the material ptr
+    }
     const vec3& get_center() const {
         return center;
     }

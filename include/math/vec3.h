@@ -60,6 +60,14 @@ public:
         return std::sqrt(length_squared());
     }
 
+    static vec3 random() {
+        return vec3(random_uniform_dist_num(), random_uniform_dist_num(), random_uniform_dist_num());
+    }
+
+    static vec3 random(double min, double max) {
+        return vec3(random_uniform_dist_num(min, max), random_uniform_dist_num(min, max), random_uniform_dist_num(min, max));
+    }
+
 };
 
 
@@ -106,10 +114,27 @@ std::ostream& operator<<(std::ostream& output_stream, const vec3& vector_to_writ
 
 vec3 unit_vector(const vec3& v) {
     return v / v.length();
-} 
+}
+
+vec3 random_unit_vector() {
+    while (true) {
+        vec3 rand = vec3::random();
+        double length_sq = rand.length_squared();
+        if (1e-160 < length_sq && length_sq <= 1) { return rand / length_sq; } // degeneracy if vector is close to center of sphere
+    }
+}
 
 double dot(const vec3& firstVec, const vec3& secondVec) {
     return (firstVec.x() * secondVec.x() + firstVec.y() * secondVec.y() + firstVec.z() * secondVec.z());
 }
+
+vec3 random_on_hemisphere(const vec3& normal) {
+    vec3 rand = vec3::random();
+    if (dot(normal, rand) < 0.0) {
+        return -rand;
+    }
+    return rand;
+}
+
 
 #endif

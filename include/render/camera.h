@@ -4,20 +4,19 @@
 class Camera {
 public:
     Camera() {};
-    Camera(double aspect_ratio, int image_width, double viewport_height, double focal_length, int samples_per_pixel) : aspect_ratio(aspect_ratio), image_width(image_width), viewport_height(viewport_height), focal_length(focal_length), samples_per_pixel(samples_per_pixel) {};
+    Camera(double aspect_ratio, int image_width, double viewport_height, double focal_length, int samples_per_pixel, int max_depth) : aspect_ratio(aspect_ratio), image_width(image_width), viewport_height(viewport_height), focal_length(focal_length), samples_per_pixel(samples_per_pixel), max_depth(max_depth) {};
 
     void render(Hittable& obj) { 
         initialize();
 
         std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
-
         for (int j = 0; j < image_height; j++) {
             std::clog << "\rLines left: " << (image_height - j) << ' ' << std::flush;
             for (int i = 0; i < image_width; i++) {
                 color pixel_color(0,0,0);
                 for (int sample = 0; sample < samples_per_pixel; sample++) {
                     Ray r = get_ray(i,j);
-                    pixel_color += ray_color(r, obj);
+                    pixel_color += ray_color(r, obj, max_depth);
                 }
 
                 writeSinglePixel(std::cout, pixel_color * pixel_samples_scale);
@@ -47,10 +46,13 @@ private:
         upperLeftPixelCenter = viewport_upper_left + 0.5 * (delta_u + delta_v); // middle from left to right and middle from top to bottom
     }
     
-    vec3 ray_color(const Ray& r, const Hittable& obj) {
+    vec3 ray_color(const Ray& r, const Hittable& obj, int depth) {
         hit_record rec;
-        if (obj.hit(r, Interval(0, infinity), rec)) {
-            return 0.5 * (rec.normal + color(1,1,1));
+        if (depth <=0) { return color(0,0,0); }
+
+        if (obj.hit(r, Interval(0.001, infinity), rec)) {
+            vec3 dir =rec.normal + random_unit_vector(); 
+            return 0.5 * ray_color(Ray(rec.p, dir), obj, depth - 1); // keep bouncing ray 
         }
 
         vec3 unit_direction = unit_vector(r.direction());
@@ -82,6 +84,7 @@ private:
     int image_width;
     double aspect_ratio;
     double pixel_samples_scale;
+    int max_depth;
     vec3 upperLeftPixelCenter;
     vec3 center;
     vec3 u; // left edge to right edge

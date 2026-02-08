@@ -1,9 +1,12 @@
 #ifndef hittable_h
 #define hittable_h
 
+class Material; // defined later
+
 struct hit_record {
     vec3 p;
     vec3 normal;
+    shared_ptr<Material> mat;
     double t;
     bool front_face;
 
