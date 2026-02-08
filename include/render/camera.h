@@ -1,6 +1,8 @@
 #ifndef camera_h
 #define camera_h
 
+#include "render/material.h"
+
 class Camera {
 public:
     Camera() {};
@@ -51,6 +53,12 @@ private:
         if (depth <=0) { return color(0,0,0); }
 
         if (obj.hit(r, Interval(0.001, infinity), rec)) {
+            Ray scattered;
+            color attenuation;
+
+            if (rec.mat->scatter(r, rec, attenuation, scattered)) {
+                return attenuation * ray_color(scattered, obj, depth - 1);
+            }
             vec3 dir =rec.normal + random_unit_vector(); 
             return 0.5 * ray_color(Ray(rec.p, dir), obj, depth - 1); // keep bouncing ray 
         }

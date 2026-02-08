@@ -7,9 +7,7 @@
 class Sphere : public Hittable{
 public:
     Sphere() {};
-    Sphere(vec3 center, double radius) : center(center), radius(std::fmax(0, radius)) {
-        // TODO: initialize the material ptr
-    }
+    Sphere(vec3 center, double radius, shared_ptr<Material> mat) : center(center), radius(std::fmax(0, radius)), mat(mat) {}
     const vec3& get_center() const {
         return center;
     }
@@ -40,16 +38,16 @@ public:
         
         rec.t = root;
         rec.p = r.at(rec.t);
-        
         vec3 outward_normal = (rec.p - center) / radius;
         rec.set_face_normal(r, outward_normal);
-
+        rec.mat = mat;
 
         return true;
     }
 private:
     vec3 center;
     double radius;
+    shared_ptr<Material> mat;
 };
 
 

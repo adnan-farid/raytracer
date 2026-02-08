@@ -68,6 +68,10 @@ public:
         return vec3(random_uniform_dist_num(min, max), random_uniform_dist_num(min, max), random_uniform_dist_num(min, max));
     }
 
+    bool near_zero() const {
+        double s = 1e-8;
+        return (std::fabs(vec[0]) < s && std::fabs(vec[1]) < s && std::fabs(vec[2]) < s);
+    }
 };
 
 
@@ -136,5 +140,7 @@ vec3 random_on_hemisphere(const vec3& normal) {
     return rand;
 }
 
-
+vec3 reflect(const vec3& v, const vec3& n) {
+    return v - 2*dot(v,n) * n;
+}
 #endif
