@@ -12,8 +12,9 @@ int main() {
     int image_width = 400;
     int viewport_height = 2.0;
     double focal_length =  1.0;   
+    int samples_per_pixel = 10;
 
-    Camera camera = Camera(aspect_ratio, image_width, viewport_height, focal_length);
+    Camera camera = Camera(aspect_ratio, image_width, viewport_height, focal_length, samples_per_pixel);
 
     Hittable_List world;
 

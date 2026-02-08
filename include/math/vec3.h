@@ -24,6 +24,13 @@ public:
         return *this; // must return dereferenced object, this is a pointer
     }
 
+    vec3& operator+=(const vec3 otherVec) {
+        vec[0] = vec[0] + otherVec[0];
+        vec[1] = vec[1] + otherVec[1];
+        vec[2] = vec[2] + otherVec[2];
+        return *this; // must return dereferenced object, this is a pointer
+    }
+
     vec3& operator-=(const double num) {
         vec[0] = vec[0] - num;
         vec[1] = vec[1] - num;

@@ -1,6 +1,6 @@
 # Introduction
 
-CPP implementation of a raytacer from scratch. More details to come.
+CPP implementation of a raytracer from scratch. More details to come.
 
 
 
