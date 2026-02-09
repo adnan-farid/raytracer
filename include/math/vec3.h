@@ -150,4 +150,13 @@ vec3 refract(const vec3& uv, const vec3& normal, double refractive_index_ratio) 
     vec3 r_parallel = -std::sqrt(std::fabs(1.0 - r_perpendicular.length_squared())) * normal;
     return r_parallel + r_perpendicular;
 }
+
+vec3 cross(const vec3& firstVec, const vec3& secondVec) {
+    return vec3(
+        firstVec.y() * secondVec.z() - firstVec.z() * secondVec.y(),
+        firstVec.z() * secondVec.x() - firstVec.x() * secondVec.z(),
+        firstVec.x() * secondVec.y() - firstVec.y() * secondVec.x()
+    );
+}
+
 #endif

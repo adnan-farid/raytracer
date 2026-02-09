@@ -6,7 +6,7 @@
 class Camera {
 public:
     Camera() {};
-    Camera(double aspect_ratio, int image_width, double viewport_height, double focal_length, int samples_per_pixel, int max_depth) : aspect_ratio(aspect_ratio), image_width(image_width), viewport_height(viewport_height), focal_length(focal_length), samples_per_pixel(samples_per_pixel), max_depth(max_depth) {};
+    Camera(double aspect_ratio, int image_width, double viewport_height, int samples_per_pixel, int max_depth, double vfov) : aspect_ratio(aspect_ratio), image_width(image_width), viewport_height(viewport_height), samples_per_pixel(samples_per_pixel), max_depth(max_depth), vfov(vfov) {};
 
     void render(Hittable& obj) { 
         initialize();
@@ -28,23 +28,39 @@ public:
     }
 
     int samples_per_pixel;
+    vec3 lookfrom = vec3(0,0,0);
+    vec3 lookat = vec3(0,0,-1);
+    vec3 vup = vec3(0,1,0); // up dir relative to camera 
 
 private:
     void initialize() {
         image_height = int(image_width / aspect_ratio);
         image_height = (image_height < 1) ? 1 : image_height;
-        viewport_width = viewport_height * (double(image_width) / image_height);
+        focal_length = (lookfrom - lookat).length();
 
+        double theta = degrees_to_rads(vfov);
+        double h = std::tan(theta / 2); 
+
+        viewport_height = 2 * h * focal_length;
+        viewport_width = viewport_height * (double(image_width) / image_height);
 
         // antialiasing
         pixel_samples_scale = 1.0 / samples_per_pixel;
 
-        v = vec3(0, -viewport_height, 0); // negative bc we are going down
-        u = vec3(viewport_width, 0, 0);
-        delta_v = v / image_height; // img is a 2d array, we need to have a 3d 'step' to move one pixel, 
-        delta_u = u / image_width;
+        center = lookfrom;
+
+        w = unit_vector(lookfrom - lookat);
+        u = unit_vector(cross(vup, w));
+        v = cross(w, u);
+
         // viewport
-        vec3 viewport_upper_left = center - vec3(0, 0, focal_length) - u / 2 - v / 2;
+        vec3 viewport_u = viewport_width * u;
+        vec3 viewport_v = viewport_height * -v; // down vertical
+
+        delta_v = viewport_v / image_height; // img is a 2d array, we need to have a 3d 'step' to move one pixel, 
+        delta_u = viewport_u / image_width;
+
+        vec3 viewport_upper_left = center - (focal_length * w) - viewport_u / 2 - viewport_v / 2;
         upperLeftPixelCenter = viewport_upper_left + 0.5 * (delta_u + delta_v); // middle from left to right and middle from top to bottom
     }
     
@@ -85,6 +101,7 @@ private:
         return vec3(random_uniform_dist_num() - 0.5, random_uniform_dist_num() - 0.5, 0); 
     }
     
+    double vfov;
     double focal_length; // length of camera to viewport
     double viewport_height;
     double viewport_width;
@@ -97,6 +114,7 @@ private:
     vec3 center;
     vec3 u; // left edge to right edge
     vec3 v; // upper edge to bottom edge
+    vec3 w;
     vec3 delta_u;
     vec3 delta_v;
 

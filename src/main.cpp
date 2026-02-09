@@ -11,13 +11,17 @@ int main() {
     double aspect_ratio = 16.0 / 9.0; // ideal ratio
     int image_width = 800;
     int viewport_height = 2.0;
-    double focal_length =  1.0;   
     int samples_per_pixel = 10; // anti aliasing
     int max_depth = 10; // maximum amt of ray bounces 
+    double vfov = 50;
 
 
 
-    Camera camera = Camera(aspect_ratio, image_width, viewport_height, focal_length, samples_per_pixel, max_depth);
+    Camera camera = Camera(aspect_ratio, image_width, viewport_height, samples_per_pixel, max_depth, vfov);
+
+    camera.lookat =   vec3(0,0,-1);
+    camera.lookfrom = vec3(-2,2,1);
+    camera.vup =      vec3(0,1,0);
 
     Hittable_List world;
 
