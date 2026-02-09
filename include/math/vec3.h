@@ -143,4 +143,11 @@ vec3 random_on_hemisphere(const vec3& normal) {
 vec3 reflect(const vec3& v, const vec3& n) {
     return v - 2*dot(v,n) * n;
 }
+
+vec3 refract(const vec3& uv, const vec3& normal, double refractive_index_ratio) {
+    double cos_theta = std::fmin(dot(-uv, normal), 1.0);
+    vec3 r_perpendicular = refractive_index_ratio * (uv + (cos_theta * normal));
+    vec3 r_parallel = -std::sqrt(std::fabs(1.0 - r_perpendicular.length_squared())) * normal;
+    return r_parallel + r_perpendicular;
+}
 #endif

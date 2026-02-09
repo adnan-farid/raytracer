@@ -44,5 +44,32 @@ private:
     double fuzz;
 };
 
+class Dielectric : public Material {
+public:
+    Dielectric(double refraction_index) : refraction_index(refraction_index) {};
+
+    bool scatter(const Ray&r, const hit_record& rec, vec3& attenuation, Ray& scattered) const override {
+        attenuation = vec3(1.0,1.0,1.0);
+        double refraction_index_2 = rec.front_face ? (1.0 / refraction_index) : refraction_index;
+
+        vec3 unit_direction = unit_vector(r.direction());
+        double cos_theta = std::fmin(dot(-unit_direction, rec.normal), 1.0);
+        double sin_theta = std::sqrt(1 - cos_theta * cos_theta);
+
+        bool cannot_refract = refraction_index_2 * sin_theta > 1.0;
+        vec3 direction;
+
+        if (cannot_refract) {
+            direction = reflect(unit_direction, rec.normal);
+        } else {
+            direction = refract(unit_direction, rec.normal, refraction_index_2);
+        }   
+
+        scattered = Ray(rec.p, direction);
+        return true;
+    }
+private:
+    double refraction_index;
+};
 
 #endif material_h
