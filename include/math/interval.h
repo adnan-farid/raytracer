@@ -6,6 +6,11 @@ public:
     Interval() : min(-infinity), max(+infinity) {};
     Interval(double min, double max) : min(min), max(max) {};
 
+    Interval(const Interval& a, const Interval&b) {
+        min = a.min <= b.min ? a.min : b.min;
+        max = a.max >= b.max ? a.max : b.max;
+    }
+
     double size() const {
         return (max - min);
     }
@@ -23,6 +28,13 @@ public:
         if (x > max) { return max; };
         return x;
     }
+
+    Interval pad(double amt) {
+        double padding = amt / 2;
+        return Interval(min - padding, max + padding);
+    }
+
+
 
     static const Interval empty, universe;
 

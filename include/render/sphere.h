@@ -7,7 +7,10 @@
 class Sphere : public Hittable{
 public:
     Sphere() {};
-    Sphere(vec3 center, double radius, shared_ptr<Material> mat) : center(center), radius(std::fmax(0, radius)), mat(mat) {}
+    Sphere(vec3 center, double radius, shared_ptr<Material> mat) : center(center), radius(std::fmax(0, radius)), mat(mat) {
+        vec3 rvec = vec3(radius, radius, radius);
+        bbox = AABB(center - rvec, center + rvec);
+    }
     const vec3& get_center() const {
         return center;
     }
@@ -44,10 +47,14 @@ public:
 
         return true;
     }
+
+    AABB bounding_box() const override { return bbox; }
+    
 private:
     vec3 center;
     double radius;
     shared_ptr<Material> mat;
+    AABB bbox; 
 };
 
 

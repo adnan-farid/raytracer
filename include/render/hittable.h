@@ -1,6 +1,8 @@
 #ifndef hittable_h
 #define hittable_h
 
+#include "math/aabb.h"
+
 class Material; // defined later
 
 struct hit_record {
@@ -20,6 +22,7 @@ class Hittable {
 public:
     virtual ~Hittable() = default;
     virtual bool hit(const Ray& r, Interval t, hit_record& rec ) const = 0;
+    virtual AABB bounding_box() const = 0;
 };
 
 #endif

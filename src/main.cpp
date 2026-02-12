@@ -6,6 +6,7 @@
 #include "render/hittable_list.h"
 #include "render/camera.h"
 #include "render/material.h"
+#include "math/bvh.h"
 
 int main() { 
     double aspect_ratio = 16.0 / 9.0; // ideal ratio
@@ -19,9 +20,9 @@ int main() {
 
     Camera camera = Camera(aspect_ratio, image_width, viewport_height, samples_per_pixel, max_depth, vfov);
 
-    camera.lookat =   vec3(0,0,-1);
-    camera.lookfrom = vec3(-2,2,1);
-    camera.vup =      vec3(0,1,0);
+    camera.lookat   = vec3(0, 0, -1);
+    camera.lookfrom = vec3(0, 0,  3);
+    camera.vup      = vec3(0, 1,  0);
 
     Hittable_List world;
 
@@ -35,5 +36,7 @@ int main() {
     world.add(make_shared<Sphere>(vec3(-1.0,    0.0, -1.0),   0.5, material_left));
     world.add(make_shared<Sphere>(vec3( 1.0,    0.0, -1.0),   0.5, material_right));
     
+    world = Hittable_List(make_shared<BVH_Node>(world));
+
     camera.render(world);
 }

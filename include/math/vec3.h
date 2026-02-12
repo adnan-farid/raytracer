@@ -3,6 +3,7 @@
 
 class vec3 {
 public:
+    
     double vec[3];
     vec3(): vec{0,0,0} {}; //default constructor
     vec3(double x1, double x2, double x3) : vec{x1,x2,x3} {};

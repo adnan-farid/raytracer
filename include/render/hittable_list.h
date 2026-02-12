@@ -2,6 +2,7 @@
 #define hittable_list_h
 
 #include "render/hittable.h"
+#include "math/aabb.h"
 
 #include <vector>
 
@@ -21,6 +22,7 @@ public:
 
     void add(std::shared_ptr<Hittable> obj) {
         objects.push_back(obj);
+        bbox = AABB(bbox, obj->bounding_box());
     };
 
     bool hit(const Ray& r, Interval t, hit_record& rec) const override {
@@ -38,6 +40,12 @@ public:
         }
         return collided;
     }
+
+    
+
+    AABB bounding_box() const override { return bbox; }
+private:
+    AABB bbox;
 };
 
 
